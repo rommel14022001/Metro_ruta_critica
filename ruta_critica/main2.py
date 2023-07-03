@@ -136,7 +136,7 @@ class InterfazGrafica:
             mas_tardio_inicio = self.grafo.holguras.get(node, 0)
             mas_temprano_terminacion = duracion - holgura
             mas_tardio_terminacion = self.grafo.holguras.get(node, 0) + duracion
-            label = f"{node}\nD: {duracion}\nH: {holgura}\nIMTemp: {mas_temprano_inicio}\nIMTard: {mas_tardio_inicio}\nTMTempr: {mas_temprano_terminacion}\nTMTardia: {mas_tardio_terminacion}"
+            label = f"\n\n\n\n\n\n\n\n\n\n\n{node}\nD: {duracion}\nH: {holgura}\nIMTemp: {mas_temprano_inicio}\nIMTard: {mas_tardio_inicio}\nTMTempr: {mas_temprano_terminacion}\nTMTardia: {mas_tardio_terminacion}"
             nx.draw_networkx_labels(G, pos, labels={node: label}, font_size=8, font_color="black", verticalalignment="center")
 
         # Dibuja la ruta crítica
