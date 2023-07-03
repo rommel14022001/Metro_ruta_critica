@@ -26,11 +26,17 @@ class Grafo:
 
         duracion_total = (nx.algorithms.dag.dag_longest_path_length(self.grafo))
         for key, actividad in self.actividades.items():
-            print(actividad)
             nombre = key
             duracion = actividad["duracion"]
-            holgura = duracion_total - duracion
+            IMTemp = duraciones[nombre]
+            TMTardia = 0
+            if self.holguras.get(nombre):
+                if duracion_total - self.holguras[nombre] >= 0:
+                    TMTardia = duracion_total - self.holguras[nombre]
+
+            holgura = TMTardia - IMTemp
             self.holguras[nombre] = holgura
+
 
         return ruta_critica
 
@@ -121,15 +127,21 @@ class InterfazGrafica:
         # Dibuja el grafo
         nx.draw(G, pos, with_labels=True, node_size=1000, node_color="lightblue", font_size=10, font_weight="bold")
 
+        # Agrega los días más tempranos y más tardíos a cada nodo
+        duraciones = nx.get_node_attributes(G, 'duracion')
+        for node in G.nodes:
+            duracion = duraciones[node]
+            holgura = self.grafo.holguras.get(node, 0)
+            mas_temprano_inicio = duracion - holgura
+            mas_tardio_inicio = self.grafo.holguras.get(node, 0)
+            mas_temprano_terminacion = duracion - holgura
+            mas_tardio_terminacion = self.grafo.holguras.get(node, 0) + duracion
+            label = f"{node}\nD: {duracion}\nH: {holgura}\nIMTemp: {mas_temprano_inicio}\nIMTard: {mas_tardio_inicio}\nTMTempr: {mas_temprano_terminacion}\nTMTardia: {mas_tardio_terminacion}"
+            nx.draw_networkx_labels(G, pos, labels={node: label}, font_size=8, font_color="black", verticalalignment="center")
+
         # Dibuja la ruta crítica
         nx.draw_networkx_edges(G, pos, edgelist=[(ruta_critica[i], ruta_critica[i + 1]) for i in range(len(ruta_critica) - 1)],
-                               edge_color='red', width=2)
-
-        # Dibuja las holguras junto a cada nodo
-        holguras = self.grafo.holguras
-        for node in G.nodes:
-            holgura = holguras.get(node, 0)
-            nx.draw_networkx_labels(G, pos, labels={node: f"{node}\nHolgura: {holgura}"}, font_size=8, font_color="black", verticalalignment="center")
+                            edge_color='red', width=2)
 
         plt.title("Diagrama de Red")
         plt.axis("off")
